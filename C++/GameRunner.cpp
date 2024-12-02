@@ -6,8 +6,8 @@ static bool notAWinner;
 int main()
 {
 
-	srand(time(NULL));
-	Game aGame;
+	srand(static_cast<unsigned int>(time(nullptr)));
+	Game aGame(std::cout);
 
 	aGame.add("Chet");
 	aGame.add("Pat");

@@ -92,8 +92,7 @@ void Game::roll(int roll)
 			isGettingOutOfPenaltyBox = true;
 
 			output << players[currentPlayer] << " is getting out of the penalty box" << endl;
-			places[currentPlayer] = places[currentPlayer] + roll;
-			if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
+			moveCurrentPlayer(roll);
 
 			output << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
 			output << "The category is " << currentCategory() << endl;
@@ -108,9 +107,7 @@ void Game::roll(int roll)
 	}
 	else
 	{
-
-		places[currentPlayer] = places[currentPlayer] + roll;
-		if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
+		moveCurrentPlayer(roll);
 
 		output << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
 		output << "The category is " << currentCategory() << endl;
@@ -138,10 +135,18 @@ string Game::currentCategory() const
 }
 
 
+void Game::moveCurrentPlayer(int roll)
+{
+	places[currentPlayer] = places[currentPlayer] + roll;
+	if (places[currentPlayer] >= getFieldNum ()) places[currentPlayer] = places[currentPlayer] - getFieldNum();
+}
+
+
 void Game::chooseNextPlayer()
 {
 	currentPlayer++;
-	if (currentPlayer == players.size()) currentPlayer = 0;
+	if (currentPlayer == players.size())
+		currentPlayer = 0;
 }
 
 
@@ -153,8 +158,16 @@ string Game::getMessage(const char* messageId) const
 
 int Game::getCategoryNum() const
 {
-	if (language == HUNGARIAN) return 6;
+	if (language == HUNGARIAN)
+		return 6;
 	return 4;
+}
+
+int Game::getFieldNum() const
+{
+	if (language == GERMAN)
+		return 16;
+	return 12;
 }
 
 
@@ -184,7 +197,6 @@ bool Game::wasCorrectlyAnswered()
 	}
 	else
 	{
-
 		output << getMessage(CorrectAnswerMessage) << endl;
 		purses[currentPlayer]++;
 		output << players[currentPlayer]
@@ -198,6 +210,7 @@ bool Game::wasCorrectlyAnswered()
 		return winner;
 	}
 }
+
 
 bool Game::wrongAnswer()
 {

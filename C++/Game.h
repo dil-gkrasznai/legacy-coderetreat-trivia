@@ -45,9 +45,11 @@ public:
 private:
 	void askQuestion();
 	string currentCategory() const;
+	void moveCurrentPlayer(int roll);
 	void chooseNextPlayer();
 	string getMessage(const char* messageId) const;
 	int getCategoryNum() const;
+	int getFieldNum() const;
 
 public:
 	bool wasCorrectlyAnswered();

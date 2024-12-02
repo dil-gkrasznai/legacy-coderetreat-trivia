@@ -136,5 +136,20 @@ TEST_F(GameTest, CorrectAnswerTest)
 }
 
 
+TEST_F(GameTest, CorrectAnswerMessageCheckTest)
+{
+	aGame->roll(1);
+	output->str("");
+	output->clear();
+
+	aGame->wasCorrectlyAnswered();
+	std::string result = output->str();
+	EXPECT_EQ(1, aGame->getPlayerPurse(0));
+	EXPECT_FALSE(aGame->isPlayerInPenaltyBox(0));
+	EXPECT_EQ("Answer was correct!\nChet now has 1 Gold Coins.\n", result);
+}
+
+
+
 
 

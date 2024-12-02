@@ -6,6 +6,8 @@
 
 using namespace std;
 
+constexpr const char* CorrectAnswerMessage = "Answer was correct!";
+
 Game::Game(ostream& output) :
 	places{}, 
 	purses{}, 
@@ -132,7 +134,7 @@ bool Game::wasCorrectlyAnswered()
 	{
 		if (isGettingOutOfPenaltyBox)
 		{
-			output << "Answer was correct!!!!" << endl;
+			output << CorrectAnswerMessage << endl;
 			purses[currentPlayer]++;
 			output << players[currentPlayer]
 			     << " now has "
@@ -153,7 +155,7 @@ bool Game::wasCorrectlyAnswered()
 	else
 	{
 
-		output << "Answer was corrent!!!!" << endl;
+		output << CorrectAnswerMessage << endl;
 		purses[currentPlayer]++;
 		output << players[currentPlayer]
 				<< " now has "

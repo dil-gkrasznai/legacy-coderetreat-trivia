@@ -8,7 +8,10 @@
 class TestGame : public Game
 {
 public:
-	TestGame(ostream& output) : Game(output) {}
+	TestGame(ostream& output, Game::Langugage language = Game::ENGLISH) :
+		Game(output, language)
+	{
+	}
 
 	int getPlayerPlace(int player) const
 	{

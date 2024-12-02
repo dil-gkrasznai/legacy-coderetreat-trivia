@@ -9,6 +9,12 @@ using namespace std;
 class TestGame;
 
 class Game{
+public:
+	enum Langugage {
+		ENGLISH,
+		HUNGARIAN,
+		GERMAN
+	};
 private:
 	friend class TestGame;
 
@@ -26,9 +32,10 @@ private:
 	bool isGettingOutOfPenaltyBox;
 
 	ostream& output;
+	Langugage language;
 
 public:
-	Game(ostream& output);
+	Game(ostream& output, Langugage language);
 
 	static string createQuestion(const string& category, int index);
 	bool isPlayable() const;
@@ -41,6 +48,7 @@ private:
 	void askQuestion();
 	string currentCategory() const;
 	void chooseNextPlayer();
+	string getMessage(const char* messageId) const;
 
 public:
 	bool wasCorrectlyAnswered();

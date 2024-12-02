@@ -3,17 +3,45 @@
 #include <stdlib.h>
 #include <iostream>
 #include <sstream>
+#include <map>
 
 using namespace std;
 
 constexpr const char* CorrectAnswerMessage = "Answer was correct!";
 
-Game::Game(ostream& output) :
+static std::string GetMessage(Game::Langugage language, const char* messageId)
+{
+	using language_map = std::map<std::string, std::string>;
+	static const language_map english_messages = { 
+			{ CorrectAnswerMessage, "Answer was correct!" } 
+	};
+	static const language_map hungarian_messages = {
+			{ CorrectAnswerMessage, "A valasz helyes!" }
+	};
+	static const language_map german_messages = {
+			{ CorrectAnswerMessage, "Ja, wohl!" }
+	};
+
+	switch (language)
+	{
+	case Game::HUNGARIAN:
+		return hungarian_messages.at(messageId);
+	case Game::GERMAN:
+		return german_messages.at(messageId);
+	case Game::ENGLISH:
+	default:
+		return english_messages.at(messageId);
+	}
+}
+
+
+Game::Game(ostream& output, Langugage language) :
 	places{}, 
 	purses{}, 
 	currentPlayer(0),
 	isGettingOutOfPenaltyBox(false),
-	output(output)
+	output(output),
+	language(language)
 {
 	for (int i = 0; i < 50; i++)
 	{
@@ -122,11 +150,19 @@ string Game::currentCategory() const
 	return "Rock";
 }
 
+
 void Game::chooseNextPlayer()
 {
 	currentPlayer++;
 	if (currentPlayer == players.size()) currentPlayer = 0;
 }
+
+
+string Game::getMessage(const char* messageId) const
+{
+	return GetMessage(language, messageId);
+}
+
 
 bool Game::wasCorrectlyAnswered()
 {
@@ -134,7 +170,7 @@ bool Game::wasCorrectlyAnswered()
 	{
 		if (isGettingOutOfPenaltyBox)
 		{
-			output << CorrectAnswerMessage << endl;
+			output << getMessage (CorrectAnswerMessage) << endl;
 			purses[currentPlayer]++;
 			output << players[currentPlayer]
 			     << " now has "
@@ -155,7 +191,7 @@ bool Game::wasCorrectlyAnswered()
 	else
 	{
 
-		output << CorrectAnswerMessage << endl;
+		output << getMessage(CorrectAnswerMessage) << endl;
 		purses[currentPlayer]++;
 		output << players[currentPlayer]
 				<< " now has "

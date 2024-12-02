@@ -7,7 +7,7 @@ int main()
 {
 
 	srand(static_cast<unsigned int>(time(nullptr)));
-	Game aGame(std::cout, Game::ENGLISH);
+	Game aGame(std::cout, Localization::ENGLISH);
 
 	aGame.add("Chet");
 	aGame.add("Pat");

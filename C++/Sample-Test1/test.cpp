@@ -8,7 +8,7 @@
 class TestGame : public Game
 {
 public:
-	TestGame(ostream& output, Game::Langugage language = Game::ENGLISH) :
+	TestGame(ostream& output, Localization::Language language = Localization::ENGLISH) :
 		Game(output, language)
 	{
 	}
@@ -64,14 +64,6 @@ TEST(TwoPlayerGameTest, Playabilitytest) {
 	EXPECT_TRUE(aGame.isPlayable());
 	EXPECT_EQ(2, aGame.howManyPlayers());
 }
-
-TEST(GameQuestionCreateTest, AddRockQuestionTest)
-{
-	EXPECT_EQ("Rock Question 0", Game::createQuestion("Rock", 0));
-	EXPECT_EQ("Rock Question 1", Game::createQuestion("Rock", 1));
-	EXPECT_EQ("Rock Question 2", Game::createQuestion("Rock", 2));
-}
-
 
 TEST(ManyPlayerTest, LotsOfPlayerAddTesf)
 {

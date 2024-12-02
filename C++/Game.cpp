@@ -9,7 +9,7 @@ using namespace std;
 
 constexpr const char* CorrectAnswerMessage = "Answer was correct!";
 
-static std::string GetMessage(Game::Langugage language, const char* messageId)
+std::string Localization::getMessage(Localization::Language language, const char* messageId)
 {
 	using language_map = std::map<std::string, std::string>;
 	static const language_map english_messages = { 
@@ -24,40 +24,78 @@ static std::string GetMessage(Game::Langugage language, const char* messageId)
 
 	switch (language)
 	{
-	case Game::HUNGARIAN:
+	case Localization::HUNGARIAN:
 		return hungarian_messages.at(messageId);
-	case Game::GERMAN:
+	case Localization::GERMAN:
 		return german_messages.at(messageId);
-	case Game::ENGLISH:
+	case Localization::ENGLISH:
 	default:
 		return english_messages.at(messageId);
 	}
 }
 
 
-Game::Game(ostream& output, Langugage language) :
+Categories::Categories(Localization::Language language)
+{
+	if (language == Localization::HUNGARIAN)
+	{
+		categories = { "Pop", "Science", "Sports", "Rock", "Money", "Politics" };
+	}
+	else
+	{
+		categories = { "Pop", "Science", "Sports", "Rock" };
+	}
+}
+
+const std::vector<std::string>& Categories::getCategories() const
+{
+	return categories;
+}
+
+
+size_t Categories::getCategoryNum() const
+{
+	return categories.size();
+}
+
+
+Questions::Questions(const Categories& categories, Localization::Language language)
+{
+	for (const auto& category : categories.getCategories())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			questions[category].push_back(createQuestion(category, language, i));
+		}
+	}
+}
+
+string Questions::getNextQuestion(const string& category)
+{
+	string question = questions[category].front();
+	questions[category].pop_front();
+	return question;
+}
+
+string Questions::createQuestion(const string& category, Localization::Language /*language*/, int index)
+{
+	return category + std::string(" Question ") + std::to_string(index);
+}
+
+
+
+Game::Game(ostream& output, Localization::Language language) :
 	places{}, 
 	purses{}, 
 	currentPlayer(0),
 	isGettingOutOfPenaltyBox(false),
 	output(output),
-	language(language)
+	language(language),
+	categories(language),
+	questions(categories, language)
 {
-	for (int i = 0; i < 50; i++)
-	{
-		questions["Pop"].push_back(createQuestion("Pop", i));
-		questions["Science"].push_back(createQuestion("Science", i));
-		questions["Sports"].push_back(createQuestion("Sports", i));
-		questions["Rock"].push_back(createQuestion("Rock", i));
-		questions["Money"].push_back(createQuestion("Money", i));
-		questions["Politics"].push_back(createQuestion("Politics", i));
-	}
 }
 
-string Game::createQuestion(const string& category, int index)
-{
-	return category + std::string (" Question ") + std::to_string(index);
-}
 
 bool Game::isPlayable() const
 {
@@ -118,27 +156,21 @@ void Game::roll(int roll)
 
 void Game::askQuestion()
 {
-	output << questions[currentCategory()].front() << endl;
-	questions[currentCategory()].pop_front();
+	output << questions.getNextQuestion (currentCategory()) << endl;
 }
 
 
 string Game::currentCategory() const
 {
-	if (places[currentPlayer] % getCategoryNum() == 0) return "Pop";
-	if (places[currentPlayer] % getCategoryNum() == 1) return "Science";
-	if (places[currentPlayer] % getCategoryNum() == 2) return "Sports";
-	if (places[currentPlayer] % getCategoryNum() == 3) return "Rock";
-	if (places[currentPlayer] % getCategoryNum() == 4) return "Money";
-	if (places[currentPlayer] % getCategoryNum() == 5) return "Politics";
-	throw std::runtime_error("Invalid category");	
+	return categories.getCategories()[places[currentPlayer] % categories.getCategoryNum()];
 }
 
 
 void Game::moveCurrentPlayer(int roll)
 {
 	places[currentPlayer] = places[currentPlayer] + roll;
-	if (places[currentPlayer] >= getFieldNum ()) places[currentPlayer] = places[currentPlayer] - getFieldNum();
+	if (places[currentPlayer] >= getFieldNum ()) 
+		places[currentPlayer] = places[currentPlayer] - getFieldNum();
 }
 
 
@@ -152,20 +184,13 @@ void Game::chooseNextPlayer()
 
 string Game::getMessage(const char* messageId) const
 {
-	return GetMessage(language, messageId);
+	return Localization::getMessage(language, messageId);
 }
 
-
-int Game::getCategoryNum() const
-{
-	if (language == HUNGARIAN)
-		return 6;
-	return 4;
-}
 
 int Game::getFieldNum() const
 {
-	if (language == GERMAN)
+	if (language == Localization::GERMAN)
 		return 16;
 	return 12;
 }

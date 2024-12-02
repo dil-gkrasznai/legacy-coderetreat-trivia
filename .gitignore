@@ -2,3 +2,6 @@
 # in a .gitignore file inside the root folder
 # of that language. See Scala/.gitignore for
 # an example. Thanks.
+/.vs
+/C++/.vs/Legacy Code Retreat
+/C++/CoverageReport-2024-12-02-11h12m15s

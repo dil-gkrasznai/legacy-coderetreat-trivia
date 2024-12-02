@@ -45,10 +45,12 @@ Game::Game(ostream& output, Langugage language) :
 {
 	for (int i = 0; i < 50; i++)
 	{
-		popQuestions.push_back(createQuestion("Pop", i));
-		scienceQuestions.push_back(createQuestion("Science", i));
-		sportsQuestions.push_back(createQuestion("Sports", i));
-		rockQuestions.push_back(createQuestion("Rock", i));
+		questions["Pop"].push_back(createQuestion("Pop", i));
+		questions["Science"].push_back(createQuestion("Science", i));
+		questions["Sports"].push_back(createQuestion("Sports", i));
+		questions["Rock"].push_back(createQuestion("Rock", i));
+		questions["Money"].push_back(createQuestion("Money", i));
+		questions["Politics"].push_back(createQuestion("Politics", i));
 	}
 }
 
@@ -119,35 +121,20 @@ void Game::roll(int roll)
 
 void Game::askQuestion()
 {
-	if (currentCategory() == "Pop")
-	{
-		output << popQuestions.front() << endl;
-		popQuestions.pop_front();
-	}
-	if (currentCategory() == "Science")
-	{
-		output << scienceQuestions.front() << endl;
-		scienceQuestions.pop_front();
-	}
-	if (currentCategory() == "Sports")
-	{
-		output << sportsQuestions.front() << endl;
-		sportsQuestions.pop_front();
-	}
-	if (currentCategory() == "Rock")
-	{
-		output << rockQuestions.front() << endl;
-		rockQuestions.pop_front();
-	}
+	output << questions[currentCategory()].front() << endl;
+	questions[currentCategory()].pop_front();
 }
 
 
 string Game::currentCategory() const
 {
-	if (places[currentPlayer] % 4 == 0) return "Pop";
-	if (places[currentPlayer] % 4 == 1) return "Science";
-	if (places[currentPlayer] % 4 == 2) return "Sports";
-	return "Rock";
+	if (places[currentPlayer] % getCategoryNum() == 0) return "Pop";
+	if (places[currentPlayer] % getCategoryNum() == 1) return "Science";
+	if (places[currentPlayer] % getCategoryNum() == 2) return "Sports";
+	if (places[currentPlayer] % getCategoryNum() == 3) return "Rock";
+	if (places[currentPlayer] % getCategoryNum() == 4) return "Money";
+	if (places[currentPlayer] % getCategoryNum() == 5) return "Politics";
+	throw std::runtime_error("Invalid category");	
 }
 
 
@@ -161,6 +148,13 @@ void Game::chooseNextPlayer()
 string Game::getMessage(const char* messageId) const
 {
 	return GetMessage(language, messageId);
+}
+
+
+int Game::getCategoryNum() const
+{
+	if (language == HUNGARIAN) return 6;
+	return 4;
 }
 
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <map>
 using namespace std;
 
 #ifndef GAME_H_
@@ -23,10 +24,7 @@ private:
 	vector<int> purses;
 	vector<bool> inPenaltyBox;
 
-	list<string> popQuestions;
-	list<string> scienceQuestions;
-	list<string> sportsQuestions;
-	list<string> rockQuestions;
+	map<string, list<string>> questions;
 
 	unsigned int currentPlayer;
 	bool isGettingOutOfPenaltyBox;
@@ -49,6 +47,7 @@ private:
 	string currentCategory() const;
 	void chooseNextPlayer();
 	string getMessage(const char* messageId) const;
+	int getCategoryNum() const;
 
 public:
 	bool wasCorrectlyAnswered();
